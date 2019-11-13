@@ -2,10 +2,20 @@ package main
 
 import "fmt"
 
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- **/
+/*
+ New Plan...
+
+ Briefly: Fly up, across, then down
+
+ Check if there is a terrain piece above current y, which is between current x and landing x
+	if so
+		fly up until above the Y of that terrain piece
+	else if not above landing zone
+		fly sideways towards landing x, maintain height, slow down as target gets closer
+	else
+		descend slowly
+*/
+
 
 type Point struct {
 	x int
@@ -13,46 +23,17 @@ type Point struct {
 }
 
 func main() {
-
-
-	var landingL Point
-	var landingR Point
-
-
-	// surfaceN: the number of points used to draw the surface of Mars.
-	var surfaceN int
-	fmt.Scan(&surfaceN)
-
-	// var prevX int
-	// var prevY int
-	// Find flat pointer
-	searching := true
-
-
-
-	for i := 0; i < surfaceN; i++ {
-		// landX: X coordinate of a surface point. (0 to 6999)
-		// landY: Y coordinate of a surface point. By linking all the points together in a sequential fashion, you form the surface of Mars.
-		var landX, landY int
-		fmt.Scan(&landX, &landY)
-
-		if !searching {
-			// We have already found a landing spot, but we need to ensure we read all the remaining
-			// terrain points before trying to fly
-			continue;
-		}
-
-
-		if i > 0 && landY - landingL.y == 0 {
-			landingR = Point{landX, landY}
-			searching = false
-		} else {
-			landingL = Point{landX, landY}
-		}
-	}
-
+	landingL, landingR := findLandingZone()
 	target := Point{landingR.x - landingL.x, landingR.y}
 	//fmt.Printf("%+v %+v\n", landingL, landingR)
+
+
+	//for {
+	//	present, height := highTerrainBetweenHereAndLandingZone()
+	//	if present {
+	//		flyUpToSafeHeight(height)
+	//	} else if ()
+	//}
 
 	for {
 		// hSpeed: the horizontal speed (in m/s), can be negative.
@@ -65,7 +46,7 @@ func main() {
 		//mt.Printf("%d %d %d %d %d %d %d ", X, Y, hSpeed, vSpeed, fuel, rotate, power)
 
 		var newRotate, newPower int
-		// fmt.Fprintln(os.Stderr, "Debug messages...")
+		// fmt.Println(os.Stderr, "Debug messages...")
 		dist := target.x - X
 
 
@@ -100,6 +81,53 @@ func main() {
 		//fmt.Println("-20 3")
 		fmt.Printf("%d %d\n", newRotate, newPower)
 	}
+}
+
+
+func highTerrainBetweenHereAndLandingZone() (bool, int) {
+	return false, -1
+}
+
+func flyUpToSafeHeight(targetHeight int) {
+
+}
+
+
+
+func findLandingZone() (Point, Point) {
+	// surfaceN: the number of points used to draw the surface of Mars.
+	var surfaceN int
+	fmt.Scan(&surfaceN)
+
+	// var prevX int
+	// var prevY int
+	// Find flat pointer
+	searching := true
+
+	var landingL Point
+	var landingR Point
+
+	for i := 0; i < surfaceN; i++ {
+		// landX: X coordinate of a surface point. (0 to 6999)
+		// landY: Y coordinate of a surface point. By linking all the points together in a sequential fashion, you form the surface of Mars.
+		var landX, landY int
+		fmt.Scan(&landX, &landY)
+
+		if !searching {
+			// We have already found a landing spot, but we need to ensure we read all the remaining
+			// terrain points before trying to fly
+			continue;
+		}
+
+		if i > 0 && landY - landingL.y == 0 {
+			landingR = Point{landX, landY}
+			searching = false
+		} else {
+			landingL = Point{landX, landY}
+		}
+	}
+
+	return landingL, landingR
 }
 
 func cap(dist int, max int) int {
